@@ -1,0 +1,55 @@
+name: sync-upstream
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # Every Monday at 09:00 UTC
+  workflow_dispatch:        # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update upstream submodule to latest main
+        id: submodule
+        run: |
+          git submodule update --remote upstream
+          SHORT_SHA=$(git -C upstream rev-parse --short HEAD)
+          echo "short_sha=$SHORT_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Regenerate skills and rules
+        run: python3 generator/generate.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet && echo "changed=false" >> "$GITHUB_OUTPUT" \
+            || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open pull request if changes detected
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: sync dotnet/skills @ ${{ steps.submodule.outputs.short_sha }}"
+          branch: "sync/dotnet-skills-${{ steps.submodule.outputs.short_sha }}"
+          title: "chore: sync dotnet/skills @ ${{ steps.submodule.outputs.short_sha }}"
+          body: |
+            Automated sync with upstream [dotnet/skills](https://github.com/dotnet/skills).
+
+            **Upstream commit**: `${{ steps.submodule.outputs.short_sha }}`
+
+            This PR was opened automatically by the `sync-upstream` workflow.
+            Review the diff and merge to publish the updated skills.
+          labels: "sync"
+          delete-branch: true

@@ -1,0 +1,11 @@
+This repository redistributes content from dotnet/skills
+(https://github.com/dotnet/skills), Copyright Microsoft Corporation,
+licensed under the MIT License.
+
+The original MIT License text is included in upstream/LICENSE (git submodule)
+and applies to all content under the skills/ and rules/ directories in this
+repository.
+
+The generator scripts (generator/), install scripts (install.sh, install.ps1),
+and workflow configurations (.github/) are original works by the contributors
+to this repository and are also released under the MIT License.
