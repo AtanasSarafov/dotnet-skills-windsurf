@@ -2,7 +2,7 @@ name: sync-upstream
 
 on:
   schedule:
-    - cron: '0 9 * * 1'   # Every Monday at 09:00 UTC
+    - cron: '0 6 * * *'   # Every day at 06:00 UTC
   workflow_dispatch:        # Allow manual trigger
 
 permissions:
@@ -37,6 +37,7 @@ jobs:
             || echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Open pull request if changes detected
+        id: create-pr
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
@@ -45,11 +46,16 @@ jobs:
           branch: "sync/dotnet-skills-${{ steps.submodule.outputs.short_sha }}"
           title: "chore: sync dotnet/skills @ ${{ steps.submodule.outputs.short_sha }}"
           body: |
-            Automated sync with upstream [dotnet/skills](https://github.com/dotnet/skills).
+            Automated daily sync with upstream [dotnet/skills](https://github.com/dotnet/skills).
 
             **Upstream commit**: `${{ steps.submodule.outputs.short_sha }}`
 
-            This PR was opened automatically by the `sync-upstream` workflow.
-            Review the diff and merge to publish the updated skills.
+            This PR is auto-merged by the `sync-upstream` workflow.
           labels: "sync"
           delete-branch: true
+
+      - name: Enable auto-merge
+        if: steps.create-pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --merge "${{ steps.create-pr.outputs.pull-request-number }}"
