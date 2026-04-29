@@ -51,6 +51,14 @@ def copy_skill(skill_dir: Path, plugin_name: str) -> None:
     shutil.copytree(skill_dir, dest)
 
 
+_SUBAGENT_NOTE = (
+    "> **Note:** This rule was converted from a [dotnet/skills](https://github.com/dotnet/skills) "
+    "agent definition. Windsurf has no sub-agent spawning — Cascade executes the described "
+    "workflow steps directly. `runSubagent` calls are guidance for how to approach the task, "
+    "not literal sub-agent invocations.\n\n"
+)
+
+
 def generate_rule(agent_file: Path, plugin_name: str) -> None:
     """Generate a Windsurf rule file from a .agent.md file."""
     text = agent_file.read_text(encoding="utf-8")
@@ -58,7 +66,8 @@ def generate_rule(agent_file: Path, plugin_name: str) -> None:
     agent_name = fields.get("name", agent_file.stem.replace(".agent", ""))
     rule_name = f"{plugin_name}--{agent_name}.md"
     dest = RULES_OUT / rule_name
-    content = "---\ntrigger: manual\n---\n" + body
+    note = _SUBAGENT_NOTE if "runSubagent" in body else ""
+    content = "---\ntrigger: manual\n---\n" + note + body
     dest.write_text(content, encoding="utf-8")
 
 

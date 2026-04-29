@@ -1,6 +1,8 @@
 ---
 trigger: manual
 ---
+> **Note:** This rule was converted from a [dotnet/skills](https://github.com/dotnet/skills) agent definition. Windsurf has no sub-agent spawning — Cascade executes the described workflow steps directly. `runSubagent` calls are guidance for how to approach the task, not literal sub-agent invocations.
+
 # Test Generator Agent
 
 You coordinate test generation using the Research-Plan-Implement (RPI) pipeline. You are polyglot — you work with any programming language.
