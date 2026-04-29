@@ -3,7 +3,7 @@
 generate.py — Prepares Windsurf-ready skill and rule files from dotnet/skills upstream.
 
 Skills: copied verbatim from upstream (Windsurf natively supports SKILL.md format).
-Rules:  generated from .agent.md files — frontmatter stripped, trigger: always_on added.
+Rules:  generated from .agent.md files — frontmatter stripped, trigger: manual added.
 
 Usage:
     python3 generator/generate.py                  # all plugins
@@ -58,7 +58,7 @@ def generate_rule(agent_file: Path, plugin_name: str) -> None:
     agent_name = fields.get("name", agent_file.stem.replace(".agent", ""))
     rule_name = f"{plugin_name}--{agent_name}.md"
     dest = RULES_OUT / rule_name
-    content = "---\ntrigger: always_on\n---\n" + body
+    content = "---\ntrigger: manual\n---\n" + body
     dest.write_text(content, encoding="utf-8")
 
 
