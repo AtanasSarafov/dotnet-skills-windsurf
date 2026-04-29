@@ -21,9 +21,9 @@ All [official .NET skills](https://github.com/dotnet/skills) from the .NET team 
 | [dotnet-test](skills/dotnet-test/) | 18 | Test execution, filtering, MSTest workflows |
 | [dotnet-upgrade](skills/dotnet-upgrade/) | 6 | Framework/language migration, version targeting |
 
-Skills are auto-invoked by Cascade when relevant, or call them explicitly with `@skill-name`.
+Skills are auto-invoked by Cascade when relevant, or invoke them explicitly with `@skill-name`.
 
-Agent rules (in `rules/`) provide always-on .NET expert personas for workspace-level installs.
+Agent rules (in `rules/`) activate always-on .NET expert personas and are installed at workspace level.
 
 ## Install
 
@@ -40,7 +40,7 @@ git clone https://github.com/AtanasSarafov/dotnet-skills-windsurf
 
 ### Step 2 — Run the install script
 
-**Workspace install** — skills active in one project:
+**Workspace install** — skills and rules active in one project:
 
 ```bash
 # macOS / Linux
@@ -50,7 +50,7 @@ git clone https://github.com/AtanasSarafov/dotnet-skills-windsurf
 .\dotnet-skills-windsurf\install.ps1 -TargetDir C:\path\to\your\project
 ```
 
-**Global install** — skills active in all Windsurf projects:
+**Global install** — skills active across all Windsurf projects:
 
 ```bash
 # macOS / Linux
@@ -60,7 +60,7 @@ git clone https://github.com/AtanasSarafov/dotnet-skills-windsurf
 .\dotnet-skills-windsurf\install.ps1 -Global
 ```
 
-> **Note on agent rules:** Rules (always-on .NET expert personas) are workspace-scoped in Windsurf. They are installed with the workspace install, not the global install. Run the workspace install in each project where you want them active.
+> **Agent rules are workspace-scoped.** Windsurf does not support global rule directories (only a single 6 KB global rules file). Run the workspace install in each project where you want the always-on .NET personas active.
 
 **Install a single plugin:**
 
@@ -74,11 +74,18 @@ git clone https://github.com/AtanasSarafov/dotnet-skills-windsurf
 
 ### Step 3 — Reload Windsurf
 
-Open the Command Palette and run **Developer: Reload Window**. Cascade will auto-discover all installed skills.
+Open the Command Palette → **Developer: Reload Window**. Cascade auto-discovers all installed skills.
 
-### Update
+### Keeping skills up to date
 
-Pull the latest skills and re-run the install script:
+The install script checks whether your local clone is behind the remote and warns you if so:
+
+```
+⚠  Your local copy is 3 commit(s) behind (remote updated 2 days ago).
+   Run: git -C "/path/to/dotnet-skills-windsurf" pull
+```
+
+To update, pull and re-run the install:
 
 ```bash
 git -C dotnet-skills-windsurf pull
@@ -88,12 +95,14 @@ git -C dotnet-skills-windsurf pull
 
 ## How it works
 
-This repository wraps [dotnet/skills](https://github.com/dotnet/skills) as a git submodule and pre-generates Windsurf-ready files:
+This repo tracks [dotnet/skills](https://github.com/dotnet/skills) as a git submodule (`upstream/`) and pre-generates Windsurf-ready files from it:
 
-- **`skills/`** — skill directories copied verbatim from upstream. Windsurf natively supports the [agentskills.io](https://agentskills.io) SKILL.md format used by dotnet/skills.
-- **`rules/`** — Windsurf rule files generated from upstream agent definitions. Each rule gets `trigger: always_on` so Cascade loads it automatically.
+- **`skills/`** — skill directories copied verbatim from upstream. No conversion needed: Windsurf natively uses the same [agentskills.io](https://agentskills.io) SKILL.md format.
+- **`rules/`** — Windsurf rule files generated from upstream agent definitions. Each gets `trigger: always_on` so Cascade loads it automatically.
 
-A GitHub Actions workflow runs every Monday to sync with upstream and open a PR when new skills are available.
+> Do not edit `skills/` or `rules/` directly — they are overwritten on every sync.
+
+A GitHub Actions workflow runs daily, pulls the latest `dotnet/skills`, regenerates both folders, and auto-merges the resulting PR. Your local clone is the only thing that can fall behind — hence the install-time warning.
 
 ## License
 
