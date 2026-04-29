@@ -32,6 +32,21 @@ if ($IsWindows -or $env:OS -eq "Windows_NT") {
 }
 $GlobalSkillsDir = Join-Path $HomeDir ".codeium" "windsurf" "skills"
 
+# Check whether local clone is behind the remote (non-blocking — just warns)
+$GitCmd = Get-Command git -ErrorAction SilentlyContinue
+if ($GitCmd -and (Test-Path (Join-Path $ScriptDir ".git"))) {
+    try {
+        git -C $ScriptDir fetch origin main --quiet 2>$null
+        $Behind = [int](git -C $ScriptDir rev-list HEAD..origin/main --count 2>$null)
+        if ($Behind -gt 0) {
+            $RemoteAgo = git -C $ScriptDir log origin/main -1 --format="%ar" 2>$null
+            Write-Host "WARNING: Your local copy is $Behind commit(s) behind (remote updated $RemoteAgo)."
+            Write-Host "  Run: git -C `"$ScriptDir`" pull"
+            Write-Host ""
+        }
+    } catch { }
+}
+
 # Determine skill source
 if (Test-Path $SkillsSrc -PathType Container) {
     $SkillSource = "pregenerated"

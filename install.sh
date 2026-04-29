@@ -43,6 +43,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Check whether local clone is behind the remote (non-blocking — just warns)
+if command -v git &>/dev/null && [[ -d "$SCRIPT_DIR/.git" ]]; then
+  if git -C "$SCRIPT_DIR" fetch origin main --quiet 2>/dev/null; then
+    BEHIND=$(git -C "$SCRIPT_DIR" rev-list HEAD..origin/main --count 2>/dev/null || echo "0")
+    if [[ "$BEHIND" -gt 0 ]]; then
+      REMOTE_AGO=$(git -C "$SCRIPT_DIR" log origin/main -1 --format="%ar" 2>/dev/null || echo "recently")
+      echo "⚠  Your local copy is $BEHIND commit(s) behind (remote updated $REMOTE_AGO)."
+      echo "   Run: git -C \"$SCRIPT_DIR\" pull"
+      echo ""
+    fi
+  fi
+fi
+
 # Determine skill source
 if [[ -d "$SCRIPT_DIR/skills" ]]; then
   SKILL_SOURCE="pregenerated"
