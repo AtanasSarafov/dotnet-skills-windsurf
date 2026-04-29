@@ -1,6 +1,6 @@
 # .NET Skills for Windsurf
 
-[![Sync with dotnet/skills](https://github.com/atanassarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/atanassarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml)
+[![Sync with dotnet/skills](https://github.com/AtanasSarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/AtanasSarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml)
 
 All [official .NET skills](https://github.com/dotnet/skills) from the .NET team at Microsoft, packaged for [Windsurf](https://windsurf.com).
 
@@ -35,7 +35,7 @@ Agent rules (in `rules/`) provide always-on .NET expert personas for workspace-l
 ### Step 1 — Clone this repository
 
 ```bash
-git clone https://github.com/atanassarafov/dotnet-skills-windsurf
+git clone https://github.com/AtanasSarafov/dotnet-skills-windsurf
 ```
 
 ### Step 2 — Run the install script
