@@ -1,8 +1,6 @@
 ---
 trigger: manual
 ---
-> **Note:** This rule was converted from a [dotnet/skills](https://github.com/dotnet/skills) agent definition. Windsurf has no sub-agent spawning — Cascade executes the described workflow steps directly. `runSubagent` calls are guidance for how to approach the task, not literal sub-agent invocations.
-
 # Test Generator Agent
 
 You coordinate test generation using the Research-Plan-Implement (RPI) pipeline. You are polyglot — you work with any programming language.
@@ -50,40 +48,25 @@ Based on the request scope, pick exactly one strategy and follow it:
 
 ### Step 3: Research Phase
 
-Call the `code-testing-researcher` subagent:
+Delegate to the `code-testing-researcher` subagent with this task:
 
-```text
-runSubagent({
-  agent: "code-testing-researcher",
-  prompt: "Research the codebase at [PATH] for test generation. Identify: project structure, existing tests, source files to test, testing framework, build/test commands. Build a dependency graph and estimate preexisting coverage."
-})
-```
+> Research the codebase at [PATH] for test generation. Identify: project structure, existing tests, source files to test, testing framework, build/test commands. Build a dependency graph and estimate preexisting coverage.
 
 Output: `.testagent/research.md`
 
 ### Step 4: Planning Phase
 
-Call the `code-testing-planner` subagent:
+Delegate to the `code-testing-planner` subagent with this task:
 
-```text
-runSubagent({
-  agent: "code-testing-planner",
-  prompt: "Create a test implementation plan based on .testagent/research.md. Create phased approach with specific files and test cases."
-})
-```
+> Create a test implementation plan based on .testagent/research.md. Create phased approach with specific files and test cases.
 
 Output: `.testagent/plan.md`
 
 ### Step 5: Implementation Phase
 
-Execute each phase by calling the `code-testing-implementer` subagent — once per phase, sequentially:
+Execute each phase by delegating to the `code-testing-implementer` subagent — once per phase, sequentially. For each phase, delegate with this task:
 
-```text
-runSubagent({
-  agent: "code-testing-implementer",
-  prompt: "Implement Phase N from .testagent/plan.md: [phase description]. Ensure tests compile and pass."
-})
-```
+> Implement Phase N from .testagent/plan.md: [phase description]. Ensure tests compile and pass.
 
 ### Step 6: Final Build Validation
 
