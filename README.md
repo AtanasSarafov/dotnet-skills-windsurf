@@ -1,4 +1,4 @@
-# .NET Skills for Windsurf
+# .NET Skills for Devin / Windsurf
 
 [![Sync with dotnet/skills](https://github.com/AtanasSarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/AtanasSarafov/dotnet-skills-windsurf/actions/workflows/sync-upstream.yml)
 
