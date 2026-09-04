@@ -87,7 +87,7 @@ Search for commands in:
 - `README.md` instructions
 - Project files
 
-Identify **two** test commands and record both in `.testagent/research.md`:
+Identify **two** test commands and record both in the caller-provided research document:
 
 1. **Scoped test command** — what the implementer should run during fix cycles (e.g., `dotnet test <test.csproj>` for SDK-style .NET, the repository's MSBuild + VSTest/MSTest command for classic .NET, `bundle exec rspec spec/foo_spec.rb`, `Invoke-Pester -Path ./Tests/Foo.Tests.ps1`). Optimized for speed and locality.
 2. **Harness-equivalent discovery command** — what a generic CI/benchmark verifier would run from the repo root with no args (e.g., `dotnet test <solution> --list-tests` for SDK-style .NET, the checked-in runner/discovery command for classic .NET, `bundle exec rspec --dry-run`, `Invoke-Pester` with default config, `pytest --collect-only -q`). This is the command the implementer's "Verify Harness Discovery" step uses to confirm new tests are visible to outside tooling. Call the `code-testing-extensions` skill and consult the "Harness Discovery Check" section of the relevant language extension.
@@ -112,7 +112,7 @@ Before manually pairing source ↔ test files in C#, Python, TypeScript/JavaScri
 
 ### 8. Generate Research Document
 
-Create `.testagent/research.md` with this structure:
+Create `<TESTAGENT_DIR>/research.md` with this structure:
 
 ```markdown
 # Test Generation Research
@@ -180,6 +180,9 @@ For each test project found, list:
 
 ## Output
 
-Write the research document to `.testagent/research.md` in the workspace root.
+Write the research document to the absolute `<TESTAGENT_DIR>/research.md` path
+provided by the caller. `<TESTAGENT_DIR>` must be non-stageable host scratch
+storage, Git metadata, or OS temp. Never place `<TESTAGENT_DIR>` or its files in
+version-controlled workspace content.
 
 Only consult a language example when no representative tests exist and the base extension does not establish the needed convention.
