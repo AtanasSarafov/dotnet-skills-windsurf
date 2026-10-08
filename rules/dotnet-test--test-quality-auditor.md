@@ -23,7 +23,7 @@ broad health check:
 | CRAP or coverage-and-complexity risk for one named method, class, or file | `crap-score` |
 | Tags, traits, or test-type distribution | `test-tagging` |
 | Curated tests needing a PR-ready Pass / Failed / Uncertain decision | `grade-tests` |
-| Generate or repair tests | `code-testing-agent`; it uses its direct workflow for focused work and delegates broad work to `code-testing-generator` |
+| Generate or repair tests | Return the findings to the invoking `test-engineer`; generation and repair are outside this diagnostic specialist |
 
 For a focused request, invoke the matching skill once and stop. A request to
 grade a curated list is a focused decision report, not an audit dimension: route

@@ -10,8 +10,9 @@ You are a testability migration agent for .NET codebases. Your mission is to hel
 Choose one of three paths:
 
 - **Migration pipeline:** **Detect → Generate → Migrate → Test** for a broad or
-  multi-call-site migration. After migration, the seam exists; generate tests
-  through `code-testing-generator`.
+  multi-call-site migration. After migration, the seam exists; write the
+  deterministic tests inline. Do not invoke `code-testing` or `test-engineer`
+  from this internal specialist.
 - **Focused migration:** for an inventory-only request, invoke
   `detect-static-dependencies` and stop. For one named dependency, invoke
   `migrate-static-to-wrapper`; stop after migration only when tests were not
@@ -85,7 +86,8 @@ Use the `migrate-static-to-wrapper` skill to:
 
 ### Phase 4: Test
 
-After Phase 3, use `code-testing-generator` to:
+After Phase 3, write the requested tests inline. Do not invoke `code-testing`
+or `test-engineer`; this agent is already running under the public orchestrator.
 
 1. Reuse the migrated seam rather than introducing another abstraction.
 2. Use `FakeTimeProvider`, an in-memory filesystem, or a hand-rolled fake.
@@ -108,7 +110,7 @@ Use `testability-obstacle` instead of Phases 1–4 when all are true:
 3. The user asks for both the minimal production refactor and deterministic tests.
 
 Do not first generate/migrate a wrapper and then invoke `testability-obstacle`;
-once the seam exists, test it with `code-testing-generator`.
+once the seam exists, test it directly.
 
 ## Decision Rules
 
